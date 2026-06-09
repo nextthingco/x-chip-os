@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+# dummy live hook
+# normal hooks won't run without at least one >___>
+
+exit 0

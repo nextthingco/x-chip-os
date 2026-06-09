@@ -1,0 +1,8 @@
+# Override the upstream flash-kernel/db
+# with an entry that uses our chip flavor and script name
+Machine: NextThing C.H.I.P.
+Kernel-Flavors: chip
+DTB-Id: sun5i-r8-chip.dtb
+Boot-Script-Path: /boot/boot.scr
+U-Boot-Script-Name: bootscr.chip
+Required-Packages: u-boot-tools

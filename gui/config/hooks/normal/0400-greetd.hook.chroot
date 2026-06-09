@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+# # use greetd for display manager with agreety
+# # check config in includes.chroot_after_packages/etc/greetd/config.toml
+# rm /etc/greetd/config.toml
+# 
+# # todo, check if these are necessary
+# systemctl set-default graphical.target
+# systemctl enable greetd

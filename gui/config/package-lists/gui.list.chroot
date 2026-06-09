@@ -1,0 +1,22 @@
+
+# xorg, we're using drm+kms so we only need core
+xserver-xorg-core
+xserver-xorg-input-libinput
+xinit
+
+# mesa stuff, todo check if necessary
+libgl1-mesa-dri
+libegl-mesa0
+libegl1
+libgles2
+mesa-utils
+
+# deskop
+openbox
+xterm
+pcmanfm
+dbus-x11
+
+# greetd + tuigreet for cheap dm
+greetd
+tuigreet

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+# original hook leaves an empty file,
+# this borks ssh-keygen, because the empty file doesn't trigger the FirstBoot Condition
+# but this special value will
+printf 'uninitialized\n' > /etc/machine-id

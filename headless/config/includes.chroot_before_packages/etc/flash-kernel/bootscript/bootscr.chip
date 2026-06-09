@@ -1,0 +1,9 @@
+# CHIP NAND boot script (flash-kernel template; see /etc/flash-kernel/db).
+# console=tty0 (composite/framebuffer)
+# @@KERNEL_VERSION@@ replaced by flash-kernel
+# audit=0: no auditd runs, so the kernel audit subsystem would otherwise dump
+# PAM/login/sudo records via printk straight onto the console -- disable it.
+setenv bootargs 'console=tty0 console=ttyS0,115200 audit=0 ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs rw rootwait'
+ubifsload 0x42000000 /boot/vmlinuz-@@KERNEL_VERSION@@
+ubifsload 0x43000000 /boot/dtbs/@@KERNEL_VERSION@@/sun5i-r8-chip.dtb
+bootz 0x42000000 - 0x43000000

@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+# Trim packages a CHIP hacker-toy board doesn't need. Keep bluez + wpasupplicant
+# (onboard RTL8723BS is wifi AND bluetooth) and polkitd (NetworkManager uses it).
+#   apparmor      - MAC framework, just overhead here
+#   modemmanager  - NetworkManager Recommends; there's no cellular modem on CHIP
+export DEBIAN_FRONTEND=noninteractive
+apt-get purge -y apparmor modemmanager
+
+apt-get autoremove --purge -y

@@ -1,0 +1,38 @@
+# kernel
+linux-image-chip
+
+# boot tooling
+flash-kernel
+u-boot-tools
+
+# base / login
+systemd-sysv
+sudo
+ca-certificates
+
+# networking + wifi (firmware-realtek lives in non-free-firmware)
+network-manager
+firmware-realtek
+curl
+wget
+systemd-timesyncd
+openssh-server
+bluez
+
+
+# misc
+fake-hwclock
+dbus
+htop
+alsa-utils
+binutils
+bzip2
+plocate
+bc
+gawk
+mtd-utils
+
+# chip stuff
+chip-power
+chip-hwtest
+chip-dt-overlays

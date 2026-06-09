@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+# Trim packages a CHIP hacker-toy board doesn't need. Keep bluez + wpasupplicant
+# (onboard RTL8723BS is wifi AND bluetooth), polkitd (NetworkManager uses it),
+# and man-db (handy on a dev board).
+#   apparmor      - MAC framework, just overhead here
+#   modemmanager  - NetworkManager Recommends; there's no cellular modem on CHIP
+#   plymouth      - boot splash; we want visible dmesg on the console instead
+#   avahi-daemon  - mDNS/.local discovery; not wanted
+# Runs after 0400-greetd purges lightdm, so the autoremove below also sweeps
+# lightdm's now-orphaned deps.
+export DEBIAN_FRONTEND=noninteractive
+apt-get purge -y apparmor modemmanager plymouth avahi-daemon lightdm
+
+apt-get autoremove --purge -y

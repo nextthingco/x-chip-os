@@ -1,0 +1,6 @@
+#!/bin/sh -e
+
+# add chip
+adduser --gecos "" --disabled-password chip
+echo 'chip:chip' | chpasswd
+adduser chip sudo

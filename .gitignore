@@ -1,0 +1,17 @@
+# live-build build state / outputs (any flavor dir)
+*/.build/
+*/cache/
+*/chroot/
+*/chroot.*
+*/binary/
+*/binary.*
+*/.stage/
+*/*.tar
+*/*.tar.*
+*/*.iso
+*/*.img
+*/*.log
+*/*.lock
+*/live-image-armhf.contents
+# per-flavor rootfs output (build.sh writes these at the repo root)
+/*-rootfs.tar.gz

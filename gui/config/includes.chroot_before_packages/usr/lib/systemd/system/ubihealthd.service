@@ -1,0 +1,14 @@
+[Unit]
+Description=NAND health watchdog service
+ConditionFileIsExecutable=/usr/sbin/ubihealthd
+After=systemd-journald.socket
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/ubihealthd -d /dev/ubi0 -f /var/cache/ubihealthd.v1.stats
+PIDFile=/run/ubihealthd.pid
+StandardOutput=journal
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

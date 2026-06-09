@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+# if flash-kernel is diverted, un-divert it
+if dpkg-divert --list /usr/sbin/flash-kernel | grep -q .; then
+    rm -f /usr/sbin/flash-kernel
+    dpkg-divert --rename --quiet --remove /usr/sbin/flash-kernel
+
+    # FLASH_KERNEL_NOTRIGGER=1: force generation of boot.scr
+    # FK_IGNORE_EFI=yes: ignore the host machine assesment
+    for img in /boot/vmlinuz-*-chip; do
+        [ -e "$img" ] || continue
+        FK_IGNORE_EFI=yes FLASH_KERNEL_NOTRIGGER=1 flash-kernel "${img##*/vmlinuz-}"
+    done
+
+    # re-divert
+    dpkg-divert --rename --quiet --add /usr/sbin/flash-kernel
+    ln -sf /bin/true /usr/sbin/flash-kernel
+fi
+
+# fail if boot.scr wasn't produced
+if [ ! -f /boot/boot.scr ]; then
+    echo "ERROR: flash-kernel did not produce /boot/boot.scr"
+    exit 1;
+fi
