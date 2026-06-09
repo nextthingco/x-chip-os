@@ -1,0 +1,58 @@
+name: release-os
+
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: write   # create releases / upload assets
+
+jobs:
+  # One job per flavor -> the two builds run in parallel on separate runners
+  # (each qemu-emulated arm/v7 build gets its own CPU). Each uploads its own
+  # <flavor>-rootfs.tar.gz, which update.sh fetches per flavor.
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [headless, gui]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable arm/v7 emulation
+        uses: docker/setup-qemu-action@v3
+
+      - name: Build ${{ matrix.flavor }} rootfs
+        run: make ${{ matrix.flavor }}
+
+      - name: Upload rootfs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.flavor }}-rootfs
+          path: ${{ matrix.flavor }}-rootfs.tar.gz
+
+  # Gather both flavors' artifacts into one tagged release so update.sh sees a
+  # single "latest" os-<date> with both assets attached.
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch built rootfs tarballs
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Compute version tag
+        id: ver
+        run: echo "tag=os-$(date -u +'%Y.%m.%d-%H%M%S')" >> "$GITHUB_OUTPUT"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: ${{ steps.ver.outputs.tag }}
+          files: dist/*-rootfs.tar.gz
+          make_latest: true

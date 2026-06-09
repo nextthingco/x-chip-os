@@ -1,17 +1,18 @@
-.PHONY: all headless gui
+.PHONY: all headless gui image
 FLAVOR ?= headless
+IMAGE := chip-os-armhf
 
+# Local convenience: build both flavors (sequential -- two qemu-emulated arm/v7
+# builds on one host just contend for CPU). Real parallelism is in CI, where the
+# release workflow fans the flavors out across separate runners (a matrix).
 all: headless gui
-	echo "ok"
 
-headless:
-	FLAVOR=headless $(MAKE) flavor
+image:
+	docker build --platform linux/arm/v7 -t $(IMAGE) .
 
-gui:
-	FLAVOR=gui $(MAKE) flavor
-
-flavor:
-	docker build --platform linux/arm/v7 -t chip-os-armhf .
+# Single-flavor entrypoints (`make headless` / `make gui`) still work standalone;
+# they depend on the shared image target so it's built first / only once.
+headless gui: image
 	docker run \
 		--platform linux/arm/v7 \
 		--privileged \
@@ -22,4 +23,4 @@ flavor:
 		-v /sys:/sys \
 		-v $$PWD:/build \
 		-w /build \
-		--rm chip-os-armhf ./build.sh $(FLAVOR)
+		--rm $(IMAGE) ./build.sh $@
