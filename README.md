@@ -16,7 +16,7 @@ image).
 ```
 Makefile            # `make` -> build a flavor's rootfs in a container
 Dockerfile          # armv7 build container (live-build)
-build.sh            # runs init.sh + lb build + repacks the rootfs tar (in-container)
+build.sh            # lb build + repack the rootfs tar (in-container)
 init.sh             # the `lb config` invocation -- the project's settings
 headless/           # the headless flavor (a normal live-build tree)
   config/
@@ -35,14 +35,22 @@ archives, package-lists, includes, and hooks untouched.
 ## Building
 
 ```
-make                 # builds headless -> ./headless-rootfs.tar.gz
-make FLAVOR=gui      # builds gui      -> ./gui-rootfs.tar.gz
+make            # builds BOTH flavors -> ./headless-rootfs.tar.gz + ./gui-rootfs.tar.gz
+make headless   # just headless       -> ./headless-rootfs.tar.gz
+make gui        # just gui            -> ./gui-rootfs.tar.gz
 ```
 
-`make` builds the armv7 container and runs `lb build` inside it, so the armhf
-rootfs is bootstrapped natively (the host just needs binfmt/qemu registered to
-run the arm/v7 image). The finished rootfs is repacked to
-`./<flavor>-rootfs.tar.gz` at the repo root, ready for `x-chip-tools` to flash.
+`make` builds the armv7 container once, then runs `lb build` inside it for each
+flavor, so the armhf rootfs is bootstrapped natively (the host just needs
+binfmt/qemu registered to run the arm/v7 image). Each finished rootfs is repacked
+to `./<flavor>-rootfs.tar.gz` at the repo root, ready for `x-chip-tools` to flash.
+
+## Releases (CI)
+
+`.github/workflows/release.yml` builds the two flavors in **parallel** — a
+`headless`/`gui` matrix on separate runners (`make <flavor>` with qemu) — then a
+single `release` job publishes both `<flavor>-rootfs.tar.gz` as one `os-<date>`
+GitHub release. `x-chip-tools/update.sh` pulls the latest from there.
 
 ## Kernel
 
