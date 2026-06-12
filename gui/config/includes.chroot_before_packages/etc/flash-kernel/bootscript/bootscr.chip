@@ -4,6 +4,41 @@
 # audit=0: no auditd runs, so the kernel audit subsystem would otherwise dump
 # PAM/login/sudo records via printk straight onto the console -- disable it.
 setenv bootargs 'console=tty0 console=ttyS0,115200 audit=0 ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs rw rootwait'
+
 ubifsload 0x42000000 /boot/vmlinuz-@@KERNEL_VERSION@@
 ubifsload 0x43000000 /boot/dtbs/@@KERNEL_VERSION@@/sun5i-r8-chip.dtb
+
+# --- DIP device-tree overlay (see project memory: dt-overlays-dip) -----------
+# DIPs carry a DS24xx 1-Wire ID EEPROM (128-byte header, ASCII magic 'CHIP').
+# Read it into RAM; if present, an overlay can be applied onto the kernel dtb
+# before boot. Requires the w1-read-to-memory u-boot patch AND a base dtb built
+# with `dtc -@` (so fdt apply can resolve overlay labels). Every step fails SAFE:
+# on any miss ${dipovl} stays empty and we boot the unmodified base dtb.
+#
+# Auto-selection (product id -> overlay) is not wired yet; for now apply one by
+# hand, e.g. with a PocketCHIP attached:
+#   setenv dipovl /lib/firmware/nextthingco/chip/early/chip-pocket-keyboard.dtbo
+#   boot
+if w1 read 0 0 0 0x80 0x45000000; then
+	# magic 'CHIP' = bytes 43 48 49 50; as a little-endian word that's 0x50494843
+	if itest.l *0x45000000 == 0x50494843; then
+		echo "DIP: CHIP id header found"
+	else
+		echo "DIP: no CHIP header (no/foreign DIP)"
+	fi
+fi
+
+if test -n "${dipovl}"; then
+	echo "DIP: applying overlay ${dipovl}"
+	fdt addr 0x43000000
+	fdt resize 0x4000
+	if ubifsload 0x44000000 ${dipovl} && fdt apply 0x44000000; then
+		echo "DIP: overlay applied"
+	else
+		# a half-applied overlay could corrupt the dtb -- reload a pristine one
+		echo "DIP: overlay failed; booting base dtb"
+		ubifsload 0x43000000 /boot/dtbs/@@KERNEL_VERSION@@/sun5i-r8-chip.dtb
+	fi
+fi
+
 bootz 0x42000000 - 0x43000000
