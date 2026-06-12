@@ -13,6 +13,8 @@ ca-certificates
 # networking + wifi (firmware-realtek lives in non-free-firmware)
 network-manager
 firmware-realtek
+wpasupplicant
+wireless-regdb
 curl
 wget
 systemd-timesyncd
