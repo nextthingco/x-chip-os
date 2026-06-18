@@ -1,0 +1,35 @@
+# PocketCHIP flavor packages -- unique to this flavor (NOT duplicates of gui).
+# Stack: X -> awesome (tiling WM) -> [pocket-home launcher, added once ported].
+
+# --- X (drm+kms, core only) ---
+xserver-xorg-core
+xserver-xorg-input-libinput
+xinit
+
+# --- mesa ---
+libgl1-mesa-dri
+libegl-mesa0
+libegl1
+libgles2
+mesa-utils
+
+# --- desktop: awesome WM + stalonetray. pocketchip-configs ships the matching
+# ~/.config/awesome/{rc.lua,theme.lua} + .stalonetrayrc via /etc/skel. awesome is
+# the only x-window-manager alternative installed, so startx launches it (same
+# mechanism gui uses for openbox). This is why pocketchip != gui (openbox). ---
+awesome
+stalonetray
+xterm
+pcmanfm
+dbus-x11
+
+# --- login: greetd + tuigreet -> startx (greetd config + hook are shared with gui) ---
+greetd
+tuigreet
+
+# --- PocketCHIP applets (NextThing pocketchip-* from the chip apt repo) ---
+pocketchip-configs
+pocketchip-batt
+pocketchip-load
+pocketchip-onboard
+# pocket-home (the launcher) gets added here once it's ported (Phase 3).

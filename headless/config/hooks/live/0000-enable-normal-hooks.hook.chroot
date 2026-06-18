@@ -1,4 +1,5 @@
 #!/bin/sh -e
+# DUPLICATE: identical copy in every x-chip-os flavor (headless/gui/pocketchip) -- keep these in sync (no common/ dir; see README).
 
 # dummy live hook
 # normal hooks won't run without at least one >___>

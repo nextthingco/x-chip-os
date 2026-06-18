@@ -1,1 +1,2 @@
+# DUPLICATE: identical copy in every x-chip-os flavor (headless/gui/pocketchip) -- keep these in sync (no common/ dir; see README).
 deb https://nextthingco.github.io/x-chip-deb-repo/trixie trixie main

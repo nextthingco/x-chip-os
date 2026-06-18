@@ -4,12 +4,21 @@ Debian (trixie) root filesystems for the NextThing C.H.I.P. (Allwinner R8 /
 sun5i), built with [live-build](https://manpages.debian.org/trixie/live-build/lb.1.en.html).
 
 Each flavor is a self-contained live-build project in its own directory.
-`headless` is the base; `gui` adds an XFCE desktop; `pocketchip` will follow.
+`headless` is the base; `gui` adds an openbox desktop; `pocketchip` adds the
+`awesome` window manager + the NextThing `pocketchip-*` applets.
+
 Shared config (kernel apt repo + key, the boot.scr/user hooks, hostname/hosts/
 adduser.conf) is **duplicated** into each flavor dir rather than symlinked, so
 every flavor is a standalone live-build tree (live-build copies includes with
 `rsync -l`, which would turn symlinked includes into dangling links in the
-image).
+image; hardlinks don't survive a `git clone`).
+
+**Keeping duplicates in sync:** every file that is byte-identical across flavors
+carries a `# DUPLICATE: ...` note at the top (after the shebang, for hook
+scripts) naming which flavors share it — edit one, edit the others. Four
+duplicated files can't take a comment and are left un-annotated: `hostname` and
+`etc/flash-kernel/machine` (bare strings) and `archives/chip.key.{chroot,binary}`
+(GPG keys).
 
 ## Layout
 
@@ -35,9 +44,10 @@ archives, package-lists, includes, and hooks untouched.
 ## Building
 
 ```
-make            # builds BOTH flavors -> ./headless-rootfs.tar.gz + ./gui-rootfs.tar.gz
+make            # builds ALL flavors  -> ./<flavor>-rootfs.tar.gz for each
 make headless   # just headless       -> ./headless-rootfs.tar.gz
 make gui        # just gui            -> ./gui-rootfs.tar.gz
+make pocketchip # just pocketchip     -> ./pocketchip-rootfs.tar.gz
 ```
 
 `make` builds the armv7 container once, then runs `lb build` inside it for each
@@ -47,10 +57,11 @@ to `./<flavor>-rootfs.tar.gz` at the repo root, ready for `x-chip-tools` to flas
 
 ## Releases (CI)
 
-`.github/workflows/release.yml` builds the two flavors in **parallel** — a
-`headless`/`gui` matrix on separate runners (`make <flavor>` with qemu) — then a
-single `release` job publishes both `<flavor>-rootfs.tar.gz` as one `os-<date>`
-GitHub release. `x-chip-tools/update.sh` pulls the latest from there.
+`.github/workflows/release.yml` builds the flavors in **parallel** — a
+`headless`/`gui`/`pocketchip` matrix on separate runners (`make <flavor>` with
+qemu) — then a single `release` job publishes every `<flavor>-rootfs.tar.gz` as
+one `os-<date>` GitHub release. `x-chip-tools/update.sh` pulls the latest from
+there.
 
 ## Kernel
 
@@ -78,6 +89,18 @@ Requires the **armmp-based kernel** (full DRM/lima driver set) -- x-chip-linux-d
 now bases the `chip` flavour on Debian's armmp config, so `linux-image-chip` from
 the apt repo carries `DRM_SUN4I`/`DRM_LIMA`. (Wiring up the actual PocketCHIP LCD
 panel/backlight in the device tree is still a separate, later step.)
+
+## pocketchip flavor
+
+The dedicated PocketCHIP image. Same X + `greetd`/`startx` login as `gui`, but the
+**`awesome`** tiling WM instead of openbox — the original PocketCHIP ran
+X → awesome → its `pocket-home` launcher. `pocketchip-configs` ships the matching
+`~/.config/awesome/{rc.lua,theme.lua}` + a stalonetray config (via `/etc/skel`),
+and the rest of the NextThing applets (`pocketchip-batt`/`-load`/`-onboard`) come
+from the CHIP apt repo. `pocket-home` itself (a JUCE app) isn't ported yet and
+gets added to `pocketchip.list.chroot` once it builds. The DIP keyboard overlay
+is auto-applied by u-boot via the DS24xx EEPROM PID, so no flavor-specific dtb
+work is needed here.
 
 ## Notes
 

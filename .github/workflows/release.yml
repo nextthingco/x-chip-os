@@ -9,7 +9,7 @@ permissions:
   contents: write   # create releases / upload assets
 
 jobs:
-  # One job per flavor -> the two builds run in parallel on separate runners
+  # One job per flavor -> the builds run in parallel on separate runners
   # (each qemu-emulated arm/v7 build gets its own CPU). Each uploads its own
   # <flavor>-rootfs.tar.gz, which update.sh fetches per flavor.
   build:
@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavor: [headless, gui]
+        flavor: [headless, gui, pocketchip]
     steps:
       - uses: actions/checkout@v4
 
@@ -33,8 +33,8 @@ jobs:
           name: ${{ matrix.flavor }}-rootfs
           path: ${{ matrix.flavor }}-rootfs.tar.gz
 
-  # Gather both flavors' artifacts into one tagged release so update.sh sees a
-  # single "latest" os-<date> with both assets attached.
+  # Gather all flavors' artifacts into one tagged release so update.sh sees a
+  # single "latest" os-<date> with every flavor's asset attached.
   release:
     needs: build
     runs-on: ubuntu-latest
