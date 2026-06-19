@@ -20,3 +20,11 @@ dbus-x11
 # greetd + tuigreet for cheap dm
 greetd
 tuigreet
+
+# fantasy console: tic80 -- OUR x-chip-deb-repo deb (built from source vs system
+# SDL2 + GLES2/EGL, NOT the upstream rpi.deb which links Broadcom blobs). Same
+# ordering caveat as the pocketchip flavor: the x-chip-deb-repo build must publish
+# tic80 before this rootfs build runs, or live-build fails on the missing package.
+# (Its integer-scale default is OFF, tuned for the 480x272 PocketCHIP panel; on a
+# larger DIP display toggle it back on in OPTIONS for clean integer scaling.)
+tic80

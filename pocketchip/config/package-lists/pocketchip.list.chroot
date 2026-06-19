@@ -19,13 +19,31 @@ mesa-utils
 # mechanism gui uses for openbox). This is why pocketchip != gui (openbox). ---
 awesome
 stalonetray
-xterm
+# lxterminal: light GTK3/VTE tabbed terminal -- the modern stand-in for the old
+# PocketCHIP terminal (stock upstream vala-terminal, GTK2/dead on trixie). Thin
+# tab bar; pocketchip-configs ships skel/.config/lxterminal/lxterminal.conf and
+# pocket-home's launcher points its "Terminal" button at it.
+lxterminal
 pcmanfm
 dbus-x11
+l3afpad
 
 # --- login: greetd + tuigreet -> startx (greetd config + hook are shared with gui) ---
 greetd
 tuigreet
+
+# --- music: goattracker (C64 SID chiptune tracker). Replaces the old proprietary
+# SunVox in pocket-home's "Make Music" button -- its compact keyboard-driven text
+# UI fits the 480x272 panel (MilkyTracker/Furnace assume far larger screens). ---
+goattracker
+
+# --- fantasy console: tic80 (replaces the proprietary PICO-8 in pocket-home's
+# "Play" button). Built by x-chip-deb-repo from source vs system SDL2 + GLES2/EGL
+# (the upstream rpi.deb links Broadcom blobs). Native 240x136 = exact 2x of the
+# 480x272 panel. NOTE: this is OUR deb -- the x-chip-deb-repo build (tic80
+# submodule added + CI green) must publish it before this rootfs build runs, or
+# live-build fails on the missing package. ---
+tic80
 
 # --- PocketCHIP applets (NextThing pocketchip-* from the chip apt repo) ---
 pocketchip-configs
