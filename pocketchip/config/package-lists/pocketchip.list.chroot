@@ -50,4 +50,4 @@ pocketchip-configs
 pocketchip-batt
 pocketchip-load
 pocketchip-onboard
-# pocket-home (the launcher) gets added here once it's ported (Phase 3).
+pocket-home

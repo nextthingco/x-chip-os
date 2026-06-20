@@ -39,3 +39,4 @@ mtd-utils
 chip-power
 chip-hwtest
 chip-dt-overlays
+chip-configs

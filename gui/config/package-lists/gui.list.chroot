@@ -13,9 +13,15 @@ mesa-utils
 
 # deskop
 openbox
+tint2
 xterm
 pcmanfm
 dbus-x11
+
+# shared CHIP desktop look: GTK theme + the tint2 panel config + an openbox
+# autostart that launches tint2. OUR x-chip-deb-repo deb; pulls chip-configs
+# (hardware base) via Depends. Must be published before this rootfs build runs.
+chip-desktop-configs
 
 # greetd + tuigreet for cheap dm
 greetd
