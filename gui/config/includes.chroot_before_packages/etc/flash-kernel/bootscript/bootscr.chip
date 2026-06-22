@@ -6,6 +6,15 @@
 # PAM/login/sudo records via printk straight onto the console -- disable it.
 setenv bootargs 'console=tty0 console=ttyS0,115200 audit=0 ubi.mtd=4 root=ubi0:rootfs rootfstype=ubifs rw rootwait'
 
+# --- Composite TV standard (NTSC vs PAL) ------------------------------------
+# u-boot defaults composite-only boards (CHIP) to PAL (720x576i); the old NTC
+# image used NTSC (720x480i, overscan 40x20), which fits a TV better. Default to
+# NTSC; for PAL, comment the NTSC line and uncomment the PAL one below. NOTE:
+# boot.scr is sourced after u-boot set up its own console, so this primarily
+# steers the mode handed to the kernel at bootz -- verify on hardware.
+setenv video-mode 'sunxi:640x480-24@60,monitor=composite-ntsc,overscan_x=40,overscan_y=20'
+#setenv video-mode 'sunxi:720x576-24@50,monitor=composite-pal,overscan_x=40,overscan_y=20'
+
 ubifsload 0x42000000 /boot/vmlinuz-@@KERNEL_VERSION@@
 ubifsload 0x43000000 /boot/dtbs/@@KERNEL_VERSION@@/sun5i-r8-chip.dtb
 

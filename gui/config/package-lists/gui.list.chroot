@@ -18,6 +18,15 @@ xterm
 pcmanfm
 dbus-x11
 
+# wallpaper: chip-desktop-configs ships the CHIP image + nitrogen bg-saved.cfg and
+# runs `nitrogen --restore` from the openbox autostart to paint it.
+nitrogen
+
+# the tint2 start button fakes Super+M (xdotool), which openbox's rc.xml (shipped
+# by chip-desktop-configs) binds to ShowMenu root-menu. Without xdotool the button
+# is a no-op.
+xdotool
+
 # shared CHIP desktop look: GTK theme + the tint2 panel config + an openbox
 # autostart that launches tint2. OUR x-chip-deb-repo deb; pulls chip-configs
 # (hardware base) via Depends. Must be published before this rootfs build runs.
