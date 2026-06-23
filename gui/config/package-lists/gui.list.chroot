@@ -17,10 +17,15 @@ tint2
 xterm
 pcmanfm
 dbus-x11
+network-manager-applet
+gmrun
+lxterminal
+netsurf-gtk
 
 # wallpaper: chip-desktop-configs ships the CHIP image + nitrogen bg-saved.cfg and
 # runs `nitrogen --restore` from the openbox autostart to paint it.
 nitrogen
+lxappearance
 
 # the tint2 start button fakes Super+M (xdotool), which openbox's rc.xml (shipped
 # by chip-desktop-configs) binds to ShowMenu root-menu. Without xdotool the button

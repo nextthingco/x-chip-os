@@ -13,6 +13,12 @@ ca-certificates
 
 # networking + wifi (firmware-realtek lives in non-free-firmware)
 network-manager
+# polkit daemon -- network-manager only RECOMMENDS it, and headless builds with
+# recommends off (LB_APT_RECOMMENDS=false), so it isn't pulled in automatically.
+# Without it, chip-configs' 50-chip-network.rules is never evaluated and rootless
+# nmtui/nmcli fail with "Not authorized to control networking". gui/pocketchip get
+# it via recommends; headless must list it explicitly.
+polkitd
 firmware-realtek
 wpasupplicant
 wireless-regdb

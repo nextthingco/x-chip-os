@@ -27,6 +27,7 @@ lxterminal
 pcmanfm
 dbus-x11
 l3afpad
+lxappearance
 
 # --- login: greetd + tuigreet -> startx (greetd config + hook are shared with gui) ---
 greetd
